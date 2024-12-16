@@ -2,7 +2,7 @@ use uuid::Uuid;
 
 #[derive(Debug)]
 pub struct PhoneBook {
-    contacts: Vec<Contact>,
+    pub contacts: Vec<Contact>,
 }
 
 impl PhoneBook {
