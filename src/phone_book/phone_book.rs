@@ -5,7 +5,6 @@ use crate::phone_book::contact::Contact;
 #[derive(Debug)]
 pub struct PhoneBook {
     pub contacts: Vec<Contact>,
-    pub(crate) msg: String,
 }
 /**
  * Implement the Default trait for the PhoneBook struct.
@@ -25,7 +24,6 @@ impl Default for PhoneBook {
         println!("Welcome to the Phone Book!");
         Self {
             contacts: Vec::new(),
-            msg: String::new(),
         }
     }
 }
@@ -49,7 +47,6 @@ impl PhoneBook {
         let mut phone_book = Self::default();
         loop {
             let operation = Self::get_input("Enter an operation or ? for help: ").to_uppercase();
-            phone_book.msg = format!("Last command: {}", operation);
             match operation.as_str() {
                 "C" => phone_book.create_contact(),
                 "Q" => {}
