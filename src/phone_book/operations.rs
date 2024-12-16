@@ -17,6 +17,7 @@ pub const OPERATIONS: &[(char, &str)] = &[
     ('L', "List in original order based on creation time"),
     ('A', "List in ascending order"),
     ('Z', "List in descending order"),
+    ('?', "Show available operations"),
 ];
 
 impl PhoneBook {
@@ -61,7 +62,37 @@ impl PhoneBook {
         self.add_contact(new_contact);
         self.msg = "Contact created successfully!".to_string();
     }
+    /// Shows a list of stored contacts in the phone book.
+    pub(crate) fn show_contacts(&self) {
+        if self.contacts.is_empty() {
+            println!("No contacts found.");
+            return;
+        }
+        let mut table = Table::new();
+        table
+            .load_preset(UTF8_FULL)
+            .apply_modifier(UTF8_ROUND_CORNERS)
+            .set_header(vec![
+                Cell::new("#").add_attribute(comfy_table::Attribute::Bold),
+                Cell::new("First Name").add_attribute(comfy_table::Attribute::Bold),
+                Cell::new("Last Name").add_attribute(comfy_table::Attribute::Bold),
+                Cell::new("Phone Number").add_attribute(comfy_table::Attribute::Bold),
+                Cell::new("Email").add_attribute(comfy_table::Attribute::Bold),
+                Cell::new("Address").add_attribute(comfy_table::Attribute::Bold),
+            ]);
 
+        for (index, contact) in self.contacts.iter().enumerate() {
+            table.add_row(vec![
+                Cell::new(format!("{}", index + 1)),
+                Cell::new(contact.first_name.clone()),
+                Cell::new(contact.last_name.clone()),
+                Cell::new(contact.phone_number.clone()),
+                Cell::new(contact.email.clone()),
+                Cell::new(contact.address.clone()),
+            ]);
+        }
+        println!("{}", table);
+    }
     /// Prompts the user for input and returns the entered string.
     ///
     /// This function prints a prompt to the console, waits for user input,

@@ -22,6 +22,7 @@ impl Default for PhoneBook {
     /// - `contacts`: An empty vector of `Contact` structs.
     /// - `msg`: An empty `String` for storing messages.
     fn default() -> Self {
+        println!("Welcome to the Phone Book!");
         Self {
             contacts: Vec::new(),
             msg: String::new(),
@@ -47,8 +48,7 @@ impl PhoneBook {
     pub fn start() {
         let mut phone_book = Self::default();
         loop {
-            phone_book.show_operations();
-            let operation = Self::get_input("Enter an operation: ").to_uppercase();
+            let operation = Self::get_input("Enter an operation or ? for help: ").to_uppercase();
             phone_book.msg = format!("Last command: {}", operation);
             match operation.as_str() {
                 "C" => phone_book.create_contact(),
@@ -60,9 +60,10 @@ impl PhoneBook {
                     println!("Exiting the phone book...");
                     break;
                 }
-                "L" => {}
+                "L" => phone_book.show_contacts(),
                 "A" => {}
                 "Z" => {}
+                "?" => phone_book.show_operations(),
                 _ => {
                     phone_book.msg = format!("Invalid operation: {}", operation);
                 }

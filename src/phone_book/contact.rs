@@ -9,11 +9,11 @@ use uuid::Uuid;
 #[derive(Debug)]
 pub struct Contact {
     uuid: Uuid,
-    first_name: String,
-    last_name: String,
-    email: String,
-    address: String,
-    phone_number: String,
+    pub(crate) first_name: String,
+    pub(crate) last_name: String,
+    pub(crate) email: String,
+    pub(crate) address: String,
+    pub(crate) phone_number: String,
 }
 /**
  * Contact struct implementation.
