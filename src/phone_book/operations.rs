@@ -36,7 +36,6 @@ impl PhoneBook {
     /// - Prompts the user for contact information.
     /// - Creates a new `Contact` instance if all required fields are provided.
     /// - Adds the new contact to the phone book's contacts list.
-    /// - Updates the `msg` field of the `PhoneBook` with the result of the operation.
     ///
     /// # Notes
     ///
@@ -46,13 +45,13 @@ impl PhoneBook {
     pub fn create_contact(&mut self) {
         let first_name = Self::get_input("Enter first name (required): ");
         if first_name.is_empty() {
-            self.msg = "First name is required. Contact creation cancelled.".to_string();
+            println!("First name is required. Contact creation cancelled.");
             return;
         }
         let last_name = Self::get_input("Enter last name (optional): ");
         let phone_number = Self::get_input("Enter phone number (required): ");
         if phone_number.is_empty() {
-            self.msg = "Phone number is required. Contact creation cancelled.".to_string();
+            println!("Phone number is required. Contact creation cancelled.");
             return;
         }
         let email = Self::get_input("Enter email (optional): ");
@@ -238,16 +237,6 @@ impl PhoneBook {
                 Cell::new(description),
             ]);
         }
-        // Add a footer to show the last command
-        table.add_row(vec![
-            Cell::new("Message:").add_attribute(comfy_table::Attribute::Bold),
-            Cell::new(if self.msg.is_empty() {
-                "None"
-            } else {
-                self.msg.as_str()
-            })
-            .fg(comfy_table::Color::Yellow),
-        ]);
         // Print the table
         println!("{}", table);
     }
@@ -267,9 +256,9 @@ impl PhoneBook {
     pub fn delete_contact(&mut self, index: usize) {
         if index < self.contacts.len() {
             self.contacts.remove(index);
-            self.msg = format!("Contact at index {} deleted successfully.", index + 1);
+            println!("Contact at index {} deleted successfully.", index + 1);
         } else {
-            self.msg = "Invalid contact index. Contact deletion failed.".to_string();
+            println!("Invalid contact index.");
         }
     }
 }
