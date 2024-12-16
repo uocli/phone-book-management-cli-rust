@@ -1,14 +1,12 @@
 use comfy_table::modifiers::UTF8_ROUND_CORNERS;
 use comfy_table::presets::UTF8_FULL;
 use comfy_table::{Cell, Table};
-use uuid::Uuid;
 
 /**
  * Define a Contact struct with fields for a UUID, first name, last name, email, address, and phone number.
  */
 #[derive(Debug)]
 pub struct Contact {
-    uuid: Uuid,
     pub(crate) first_name: String,
     pub(crate) last_name: String,
     pub(crate) email: String,
@@ -89,7 +87,6 @@ impl Default for Contact {
      */
     fn default() -> Self {
         Contact {
-            uuid: Uuid::new_v4(),
             first_name: String::new(),
             last_name: String::new(),
             email: String::new(),
