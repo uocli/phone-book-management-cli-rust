@@ -44,7 +44,6 @@ impl PhoneBook {
     ///   the contact creation is cancelled, and an appropriate message is set.
     /// - Last name, email, and address are optional fields.
     pub fn create_contact(&mut self) {
-        println!("Creating a new contact...");
         let first_name = Self::get_input("Enter first name (required): ");
         if first_name.is_empty() {
             self.msg = "First name is required. Contact creation cancelled.".to_string();
@@ -64,6 +63,25 @@ impl PhoneBook {
         println!("Contact created successfully!");
     }
     /// Shows a list of stored contacts in the phone book.
+    ///
+    /// This function iterates through the contacts stored in the phone book and displays them in a formatted table.
+    /// If no contacts are found, it prints a message indicating that no contacts were found.
+    ///
+    /// # Parameters
+    ///
+    /// * `&self` - A reference to the `PhoneBook` instance.
+    ///
+    /// # Return
+    ///
+    /// This function does not return any value. It prints the table to the console.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// let mut phone_book = PhoneBook::new();
+    /// phone_book.add_contact(Contact::new("John", "Doe", "john@example.com", "123 Main St", "1234567890"));
+    /// phone_book.show_contacts();
+    /// ```
     pub(crate) fn show_contacts(&self) {
         if self.contacts.is_empty() {
             println!("No contacts found.");
