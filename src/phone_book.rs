@@ -1,5 +1,6 @@
 use uuid::Uuid;
 
+#[derive(Debug)]
 pub struct PhoneBook {
     contacts: Vec<Contact>,
 }
@@ -12,6 +13,7 @@ impl PhoneBook {
     }
 }
 
+#[derive(Debug)]
 pub struct Contact {
     uuid: Uuid,
     first_name: String,
