@@ -23,6 +23,7 @@ const OPERATIONS: &[(char, &str)] = &[
 #[derive(Debug)]
 pub struct PhoneBook {
     pub contacts: Vec<Contact>,
+    last_command: String,
 }
 /**
  * Implement the Default trait for the PhoneBook struct.
@@ -34,6 +35,7 @@ impl Default for PhoneBook {
     fn default() -> Self {
         Self {
             contacts: Vec::new(),
+            last_command: String::new(),
         }
     }
 }
@@ -41,11 +43,31 @@ impl Default for PhoneBook {
  * PhoneBook struct implementation.
  */
 impl PhoneBook {
-    /**
-     * Implement a new method for the PhoneBook struct that creates a new PhoneBook instance with an empty vector of contacts.
-     */
-    pub fn new() -> Self {
-        Self::default()
+    pub fn start() {
+        let mut phone_book = Self::default();
+        loop {
+            phone_book.show_operations();
+            println!("\nEnter an operation:");
+            let mut operation = String::new();
+            std::io::stdin().read_line(&mut operation).unwrap();
+            let operation = operation.trim().to_uppercase();
+            phone_book.last_command = operation.to_string();
+            match operation.as_str() {
+                "C" => {}
+                "Q" => {}
+                "F" => {}
+                "U" => {}
+                "D" => {}
+                "E" => {
+                    println!("Exiting the phone book...");
+                    break;
+                }
+                "L" => {}
+                "A" => {}
+                "Z" => {}
+                _ => println!("Invalid operation!"),
+            }
+        }
     }
     /**
      * Implement an add_contact method for the PhoneBook struct that takes a Contact struct as an argument and adds it to the contacts vector.
@@ -54,9 +76,9 @@ impl PhoneBook {
         self.contacts.push(contact);
     }
     /**
-     * Display the list of operations available in the phone book as a table.
+     * Implement a show_operations method for the PhoneBook struct that displays the available operations in a table format.
      */
-    pub fn show_operations() {
+    pub fn show_operations(&self) {
         let mut table = Table::new();
         table
             .load_preset(UTF8_FULL)
@@ -65,11 +87,24 @@ impl PhoneBook {
                 Cell::new("Option").add_attribute(comfy_table::Attribute::Bold),
                 Cell::new("Description").add_attribute(comfy_table::Attribute::Bold),
             ]);
-
+        // Add the operations as rows in the table
         for &(option, description) in OPERATIONS {
-            table.add_row(vec![Cell::new(option), Cell::new(description)]);
+            table.add_row(vec![
+                Cell::new(format!("{} | {}", option, option.to_lowercase())),
+                Cell::new(description),
+            ]);
         }
-
+        // Add a footer to show the last command
+        table.add_row(vec![
+            Cell::new("Last Command:").add_attribute(comfy_table::Attribute::Bold),
+            Cell::new(if self.last_command.is_empty() {
+                "None"
+            } else {
+                self.last_command.as_str()
+            })
+            .fg(comfy_table::Color::Yellow),
+        ]);
+        // Print the table
         println!("{}", table);
     }
 }
