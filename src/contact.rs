@@ -38,6 +38,9 @@ impl Contact {
             ..Default::default()
         }
     }
+    /**
+     * Implement a show_contact method for the Contact struct that displays the contact information in a table format.
+     */
     pub fn show_contact(&self) {
         let mut table = Table::new();
         table
