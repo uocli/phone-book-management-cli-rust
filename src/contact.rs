@@ -28,13 +28,14 @@ impl Contact {
         email: String,
         address: String,
         phone_number: String,
-    ) -> Contact {
-        Contact {
+    ) -> Self {
+        let standard_phone_number = Self::standardize_phone_number(&phone_number);
+        Self {
             first_name,
             last_name,
             email,
             address,
-            phone_number,
+            phone_number: standard_phone_number,
             ..Default::default()
         }
     }
@@ -63,6 +64,20 @@ impl Contact {
         ]);
 
         println!("{}", table);
+    }
+    /**
+     * Implement a standardize_phone_number method for the Contact struct that takes a phone number as a string and returns a standardized version of the phone number.
+     */
+    fn standardize_phone_number(phone_number: &str) -> String {
+        // Remove non-numeric characters
+        let digits: String = phone_number.chars().filter(|c| c.is_digit(10)).collect();
+
+        // Format the phone number
+        if digits.len() == 10 {
+            format!("({}) {}-{}", &digits[0..=2], &digits[3..=5], &digits[6..=9])
+        } else {
+            phone_number.to_string() // Return the original if it doesn't have 10 digits
+        }
     }
 }
 /**
