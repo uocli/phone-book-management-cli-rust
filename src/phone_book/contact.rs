@@ -5,7 +5,7 @@ use comfy_table::{Cell, Table};
 /**
  * Define a Contact struct with fields for a UUID, first name, last name, email, address, and phone number.
  */
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Contact {
     pub(crate) first_name: String,
     pub(crate) last_name: String,

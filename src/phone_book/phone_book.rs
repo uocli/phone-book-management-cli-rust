@@ -60,13 +60,11 @@ impl PhoneBook {
                     println!("Exiting the phone book...");
                     break;
                 }
-                "L" => phone_book.show_contacts(),
-                "A" => {}
-                "Z" => {}
+                "L" => phone_book.list_contacts(),
+                "A" => phone_book.list_contacts_in_ascending_order(),
+                "Z" => phone_book.list_contacts_in_descending_order(),
                 "?" => phone_book.show_operations(),
-                _ => {
-                    phone_book.msg = format!("Invalid operation: {}", operation);
-                }
+                _ => println!("Invalid operation: {}", operation),
             }
         }
     }

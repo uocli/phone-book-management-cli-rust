@@ -82,8 +82,21 @@ impl PhoneBook {
     /// phone_book.add_contact(Contact::new("John", "Doe", "john@example.com", "123 Main St", "1234567890"));
     /// phone_book.show_contacts();
     /// ```
-    pub(crate) fn show_contacts(&self) {
-        if self.contacts.is_empty() {
+    pub(crate) fn list_contacts(&self) {
+        Self::show_contacts(&self.contacts);
+    }
+    pub fn list_contacts_in_ascending_order(&self) {
+        let mut contacts = self.contacts.clone();
+        contacts.sort_by(|a, b| a.first_name.cmp(&b.first_name));
+        Self::show_contacts(&contacts);
+    }
+    pub fn list_contacts_in_descending_order(&self) {
+        let mut contacts = self.contacts.clone();
+        contacts.sort_by(|a, b| b.first_name.cmp(&a.first_name));
+        Self::show_contacts(&contacts);
+    }
+    fn show_contacts(contacts: &[Contact]) {
+        if contacts.is_empty() {
             println!("No contacts found.");
             return;
         }
@@ -100,7 +113,7 @@ impl PhoneBook {
                 Cell::new("Address").add_attribute(comfy_table::Attribute::Bold),
             ]);
 
-        for (index, contact) in self.contacts.iter().enumerate() {
+        for (index, contact) in contacts.iter().enumerate() {
             table.add_row(vec![
                 Cell::new(format!("{}", index + 1)),
                 Cell::new(contact.first_name.clone()),
