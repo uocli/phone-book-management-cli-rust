@@ -1,24 +1,10 @@
-use crate::contact::Contact;
+use crate::phone_book::contact::Contact;
+use crate::phone_book::operations::OPERATIONS;
 use comfy_table::modifiers::UTF8_ROUND_CORNERS;
 use comfy_table::presets::UTF8_FULL;
 use comfy_table::{Cell, Table};
 use std::io;
 use std::io::Write;
-
-/**
- * Define a list of operations available in the phone book.
- */
-const OPERATIONS: &[(char, &str)] = &[
-    ('C', "Create"),
-    ('Q', "Fuzzy Query"),
-    ('F', "Upload contacts from a CSV file"),
-    ('U', "Update"),
-    ('D', "Delete"),
-    ('E', "Exit"),
-    ('L', "List in original order based on creation time"),
-    ('A', "List in ascending order"),
-    ('Z', "List in descending order"),
-];
 /**
  * Define a PhoneBook struct with a field for a vector of Contact structs.
  */
