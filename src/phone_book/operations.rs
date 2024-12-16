@@ -87,37 +87,37 @@ impl PhoneBook {
     }
     /// Sorts and displays the contacts in ascending order based on the first name.
     ///
-    /// This function clones the current list of contacts, sorts them in ascending order based on the first name,
-    /// and then calls the `show_contacts` function to display the sorted list.
+    /// This function sorts the current list of contacts in ascending order based on the first name,
+    /// updates the `contacts` vector with the sorted list, and then calls the `show_contacts` function to display the sorted list.
     ///
     /// # Parameters
     ///
-    /// * `&self` - A reference to the `PhoneBook` instance.
+    /// * `&mut self` - A mutable reference to the `PhoneBook` instance.
     ///
     /// # Return
     ///
     /// This function does not return any value. It prints the sorted list of contacts to the console.
-    pub fn list_contacts_in_ascending_order(&self) {
-        let mut contacts = self.contacts.clone();
-        contacts.sort_by(|a, b| a.first_name.cmp(&b.first_name));
-        Self::show_contacts(&contacts);
+    pub fn list_contacts_in_ascending_order(&mut self) {
+        self.contacts
+            .sort_by(|a, b| a.first_name.cmp(&b.first_name));
+        Self::show_contacts(&self.contacts);
     }
     /// Sorts and displays the contacts in descending order based on the first name.
     ///
-    /// This function clones the current list of contacts, sorts them in descending order based on the first name,
-    /// and then calls the `show_contacts` function to display the sorted list.
+    /// This function sorts the current list of contacts in descending order based on the first name,
+    /// updates the `contacts` vector with the sorted list, and then calls the `show_contacts` function to display the sorted list.
     ///
     /// # Parameters
     ///
-    /// * `&self` - A reference to the `PhoneBook` instance.
+    /// * `&mut self` - A mutable reference to the `PhoneBook` instance.
     ///
     /// # Return
     ///
     /// This function does not return any value. It prints the sorted list of contacts to the console.
-    pub fn list_contacts_in_descending_order(&self) {
-        let mut contacts = self.contacts.clone();
-        contacts.sort_by(|a, b| b.first_name.cmp(&a.first_name));
-        Self::show_contacts(&contacts);
+    pub fn list_contacts_in_descending_order(&mut self) {
+        self.contacts
+            .sort_by(|a, b| b.first_name.cmp(&a.first_name));
+        Self::show_contacts(&self.contacts);
     }
     /// Displays a list of stored contacts in the phone book.
     ///
@@ -250,5 +250,26 @@ impl PhoneBook {
         ]);
         // Print the table
         println!("{}", table);
+    }
+    /// Deletes a contact from the phone book's contacts list based on the provided index.
+    ///
+    /// This method takes an index as an argument and removes the contact at that index from the `contacts` vector.
+    /// If the index is out of bounds, it prints an error message.
+    ///
+    /// # Arguments
+    ///
+    /// * `self` - A mutable reference to the `PhoneBook` instance.
+    /// * `index` - An integer representing the index of the contact to be deleted.
+    ///
+    /// # Return
+    ///
+    /// This function does not return any value. The `contacts` vector of the `PhoneBook` instance is updated.
+    pub fn delete_contact(&mut self, index: usize) {
+        if index < self.contacts.len() {
+            self.contacts.remove(index);
+            self.msg = format!("Contact at index {} deleted successfully.", index + 1);
+        } else {
+            self.msg = "Invalid contact index. Contact deletion failed.".to_string();
+        }
     }
 }
