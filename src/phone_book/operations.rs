@@ -59,8 +59,9 @@ impl PhoneBook {
         let email = Self::get_input("Enter email (optional): ");
         let address = Self::get_input("Enter address (optional): ");
         let new_contact = Contact::new(first_name, last_name, email, address, phone_number);
+        new_contact.show_contact();
         self.add_contact(new_contact);
-        self.msg = "Contact created successfully!".to_string();
+        println!("Contact created successfully!");
     }
     /// Shows a list of stored contacts in the phone book.
     pub(crate) fn show_contacts(&self) {
