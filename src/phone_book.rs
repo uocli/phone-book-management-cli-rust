@@ -2,6 +2,8 @@ use crate::contact::Contact;
 use comfy_table::modifiers::UTF8_ROUND_CORNERS;
 use comfy_table::presets::UTF8_FULL;
 use comfy_table::{Cell, Table};
+use std::io;
+use std::io::Write;
 
 /**
  * Define a list of operations available in the phone book.
@@ -23,7 +25,7 @@ const OPERATIONS: &[(char, &str)] = &[
 #[derive(Debug)]
 pub struct PhoneBook {
     pub contacts: Vec<Contact>,
-    last_command: String,
+    msg: String,
 }
 /**
  * Implement the Default trait for the PhoneBook struct.
@@ -35,7 +37,7 @@ impl Default for PhoneBook {
     fn default() -> Self {
         Self {
             contacts: Vec::new(),
-            last_command: String::new(),
+            msg: String::new(),
         }
     }
 }
@@ -47,13 +49,10 @@ impl PhoneBook {
         let mut phone_book = Self::default();
         loop {
             phone_book.show_operations();
-            println!("\nEnter an operation:");
-            let mut operation = String::new();
-            std::io::stdin().read_line(&mut operation).unwrap();
-            let operation = operation.trim().to_uppercase();
-            phone_book.last_command = operation.to_string();
+            let operation = Self::get_input("Enter an operation: ").to_uppercase();
+            phone_book.msg = format!("Last command: {}", operation);
             match operation.as_str() {
-                "C" => {}
+                "C" => phone_book.create_contact(),
                 "Q" => {}
                 "F" => {}
                 "U" => {}
@@ -65,9 +64,41 @@ impl PhoneBook {
                 "L" => {}
                 "A" => {}
                 "Z" => {}
-                _ => println!("Invalid operation!"),
+                _ => {
+                    phone_book.msg = format!("Invalid operation: {}", operation);
+                }
             }
         }
+    }
+    /**
+     * Implement a create_contact method for the PhoneBook struct that prompts the user to enter contact information and creates a new Contact struct.
+     */
+    pub fn create_contact(&mut self) {
+        println!("Creating a new contact...");
+        let first_name = Self::get_input("Enter first name (required): ");
+        if first_name.is_empty() {
+            self.msg = "First name is required. Contact creation cancelled.".to_string();
+            return;
+        }
+        let last_name = Self::get_input("Enter last name (optional): ");
+        let phone_number = Self::get_input("Enter phone number (required): ");
+        if phone_number.is_empty() {
+            self.msg = "Phone number is required. Contact creation cancelled.".to_string();
+            return;
+        }
+        let email = Self::get_input("Enter email (optional): ");
+        let address = Self::get_input("Enter address (optional): ");
+        let new_contact = Contact::new(first_name, last_name, email, address, phone_number);
+        self.add_contact(new_contact);
+        self.msg = "Contact created successfully!".to_string();
+    }
+
+    fn get_input(prompt: &str) -> String {
+        print!("{}", prompt);
+        io::stdout().flush().unwrap();
+        let mut input = String::new();
+        io::stdin().read_line(&mut input).unwrap();
+        input.trim().to_string()
     }
     /**
      * Implement an add_contact method for the PhoneBook struct that takes a Contact struct as an argument and adds it to the contacts vector.
@@ -96,11 +127,11 @@ impl PhoneBook {
         }
         // Add a footer to show the last command
         table.add_row(vec![
-            Cell::new("Last Command:").add_attribute(comfy_table::Attribute::Bold),
-            Cell::new(if self.last_command.is_empty() {
+            Cell::new("Message:").add_attribute(comfy_table::Attribute::Bold),
+            Cell::new(if self.msg.is_empty() {
                 "None"
             } else {
-                self.last_command.as_str()
+                self.msg.as_str()
             })
             .fg(comfy_table::Color::Yellow),
         ]);
