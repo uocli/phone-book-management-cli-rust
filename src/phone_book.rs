@@ -1,43 +1,38 @@
-use uuid::Uuid;
-
+use crate::contact::Contact;
+/**
+ * Define a PhoneBook struct with a field for a vector of Contact structs.
+ */
 #[derive(Debug)]
 pub struct PhoneBook {
     pub contacts: Vec<Contact>,
 }
-
-impl PhoneBook {
-    pub fn new() -> PhoneBook {
-        PhoneBook {
+/**
+ * Implement the Default trait for the PhoneBook struct.
+ */
+impl Default for PhoneBook {
+    /**
+     * Implement the Default trait for the PhoneBook struct.
+     */
+    fn default() -> Self {
+        Self {
             contacts: Vec::new(),
         }
     }
 }
-
-#[derive(Debug)]
-pub struct Contact {
-    uuid: Uuid,
-    first_name: String,
-    last_name: String,
-    email: String,
-    address: String,
-    phone_number: String,
-}
-
-impl Contact {
-    pub fn new(
-        first_name: String,
-        last_name: String,
-        email: String,
-        address: String,
-        phone_number: String,
-    ) -> Contact {
-        Contact {
-            uuid: Uuid::new_v4(),
-            first_name,
-            last_name,
-            email,
-            address,
-            phone_number,
-        }
+/**
+ * PhoneBook struct implementation.
+ */
+impl PhoneBook {
+    /**
+     * Implement a new method for the PhoneBook struct that creates a new PhoneBook instance with an empty vector of contacts.
+     */
+    pub fn new() -> Self {
+        Self::default()
+    }
+    /**
+     * Implement an add_contact method for the PhoneBook struct that takes a Contact struct as an argument and adds it to the contacts vector.
+     */
+    pub fn add_contact(&mut self, contact: Contact) {
+        self.contacts.push(contact);
     }
 }
