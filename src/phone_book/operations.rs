@@ -62,7 +62,7 @@ impl PhoneBook {
         self.add_contact(new_contact);
         println!("Contact created successfully!");
     }
-    /// Shows a list of stored contacts in the phone book.
+    /// Displays the list of stored contacts in the phone book.
     ///
     /// This function iterates through the contacts stored in the phone book and displays them in a formatted table.
     /// If no contacts are found, it prints a message indicating that no contacts were found.
@@ -80,21 +80,65 @@ impl PhoneBook {
     /// ```rust
     /// let mut phone_book = PhoneBook::new();
     /// phone_book.add_contact(Contact::new("John", "Doe", "john@example.com", "123 Main St", "1234567890"));
-    /// phone_book.show_contacts();
+    /// phone_book.list_contacts();
     /// ```
     pub(crate) fn list_contacts(&self) {
         Self::show_contacts(&self.contacts);
     }
+    /// Sorts and displays the contacts in ascending order based on the first name.
+    ///
+    /// This function clones the current list of contacts, sorts them in ascending order based on the first name,
+    /// and then calls the `show_contacts` function to display the sorted list.
+    ///
+    /// # Parameters
+    ///
+    /// * `&self` - A reference to the `PhoneBook` instance.
+    ///
+    /// # Return
+    ///
+    /// This function does not return any value. It prints the sorted list of contacts to the console.
     pub fn list_contacts_in_ascending_order(&self) {
         let mut contacts = self.contacts.clone();
         contacts.sort_by(|a, b| a.first_name.cmp(&b.first_name));
         Self::show_contacts(&contacts);
     }
+    /// Sorts and displays the contacts in descending order based on the first name.
+    ///
+    /// This function clones the current list of contacts, sorts them in descending order based on the first name,
+    /// and then calls the `show_contacts` function to display the sorted list.
+    ///
+    /// # Parameters
+    ///
+    /// * `&self` - A reference to the `PhoneBook` instance.
+    ///
+    /// # Return
+    ///
+    /// This function does not return any value. It prints the sorted list of contacts to the console.
     pub fn list_contacts_in_descending_order(&self) {
         let mut contacts = self.contacts.clone();
         contacts.sort_by(|a, b| b.first_name.cmp(&a.first_name));
         Self::show_contacts(&contacts);
     }
+    /// Displays a list of stored contacts in the phone book.
+    ///
+    /// This function iterates through the contacts stored in the phone book and displays them in a formatted table.
+    /// If no contacts are found, it prints a message indicating that no contacts were found.
+    ///
+    /// # Parameters
+    ///
+    /// * `contacts` - A slice of `Contact` instances representing the contacts to be displayed.
+    ///
+    /// # Return
+    ///
+    /// This function does not return any value. It prints the table to the console.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// let mut phone_book = PhoneBook::new();
+    /// phone_book.add_contact(Contact::new("John", "Doe", "john@example.com", "123 Main St", "1234567890"));
+    /// PhoneBook::show_contacts(&phone_book.contacts);
+    /// ```
     fn show_contacts(contacts: &[Contact]) {
         if contacts.is_empty() {
             println!("No contacts found.");
