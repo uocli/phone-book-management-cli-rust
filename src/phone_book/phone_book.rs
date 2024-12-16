@@ -52,7 +52,7 @@ impl PhoneBook {
                 "Q" => {}
                 "F" => {}
                 "U" => {}
-                "D" => {}
+                "D" => phone_book.delete_contact(),
                 "E" => {
                     println!("Exiting the phone book...");
                     break;

@@ -253,12 +253,25 @@ impl PhoneBook {
     /// # Return
     ///
     /// This function does not return any value. The `contacts` vector of the `PhoneBook` instance is updated.
-    pub fn delete_contact(&mut self, index: usize) {
-        if index < self.contacts.len() {
-            self.contacts.remove(index);
-            println!("Contact at index {} deleted successfully.", index + 1);
+    pub fn delete_contact(&mut self) {
+        let index_result =
+            Self::get_input("Enter the index of the contact to delete: ").parse::<usize>();
+        if index_result.is_err() {
+            println!("Invalid contact index!");
+            return;
+        }
+        let index = index_result.unwrap();
+        if index < 1 || index > self.contacts.len() {
+            println!("Invalid contact index!");
+            return;
+        }
+        self.contacts[index - 1].show_contact();
+        let confirm = Self::get_input("Are you sure you want to delete this contact? (y/n): ");
+        if confirm == "y" {
+            self.contacts.remove(index - 1);
+            println!("Contact at index {} deleted successfully.", index);
         } else {
-            println!("Invalid contact index.");
+            println!("Contact deletion cancelled.");
         }
     }
 }
