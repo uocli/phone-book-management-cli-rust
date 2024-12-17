@@ -51,7 +51,7 @@ impl PhoneBook {
                 "C" => phone_book.create_contact(),
                 "Q" => {}
                 "F" => {}
-                "U" => {}
+                "U" => phone_book.update_contact(),
                 "D" => phone_book.delete_contact(),
                 "E" => {
                     println!("Exiting the phone book...");

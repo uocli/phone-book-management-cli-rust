@@ -274,4 +274,54 @@ impl PhoneBook {
             println!("Contact deletion cancelled.");
         }
     }
+    /// Updates a contact in the phone book's contacts list based on the provided index.
+    ///
+    /// This function prompts the user to enter the index of the contact to update, validates the input,
+    /// and then asks for new contact details. If the index is valid and all required fields are provided,
+    /// the contact at the specified index is updated with the new details.
+    ///
+    /// # Parameters
+    ///
+    /// * `self` - A mutable reference to the `PhoneBook` instance.
+    ///
+    /// # Return
+    ///
+    /// This function does not return any value. The `contacts` vector of the `PhoneBook` instance is updated.
+    pub(crate) fn update_contact(&mut self) {
+        let index_result =
+            Self::get_input("Enter the index of the contact to update: ").parse::<usize>();
+        if index_result.is_err() {
+            println!("Invalid contact index!");
+            return;
+        }
+        let index = index_result.unwrap();
+        if index < 1 || index > self.contacts.len() {
+            println!("Invalid contact index!");
+            return;
+        }
+        self.contacts[index - 1].show_contact();
+        println!("Updating contact details...");
+        let new_first_name = Self::get_input("Enter new first name: ");
+        if new_first_name.is_empty() {
+            println!("First name is required. Contact update cancelled.");
+            return;
+        }
+        let new_last_name = Self::get_input("Enter new last name: ");
+        let new_phone_number = Self::get_input("Enter new phone number: ");
+        if new_phone_number.is_empty() {
+            println!("Phone number is required. Contact update cancelled.");
+            return;
+        }
+        let new_email = Self::get_input("Enter new email: ");
+        let new_address = Self::get_input("Enter new address: ");
+        let updated_contact = Contact::new(
+            new_first_name,
+            new_last_name,
+            new_email,
+            new_address,
+            new_phone_number,
+        );
+        self.contacts[index - 1] = updated_contact;
+        println!("Contact updated successfully!");
+    }
 }
