@@ -363,6 +363,11 @@ impl PhoneBook {
             Self::show_contacts(&found_contacts);
         }
     }
+    /// Loads contacts from a CSV file into the phone book.
+    ///
+    /// # Parameters
+    ///
+    /// * `self` - A mutable reference to the `PhoneBook` instance.
     pub(crate) fn load_contacts_from_csv(&mut self) {
         let file_name = Self::get_input("Enter the name of the CSV file to load contacts from: ");
         // Open the CSV file
