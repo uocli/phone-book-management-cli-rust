@@ -54,8 +54,11 @@ impl PhoneBook {
                 "U" => phone_book.update_contact(),
                 "D" => phone_book.delete_contact(),
                 "E" => {
-                    println!("Exiting the phone book...");
-                    break;
+                    let confirmation = Self::get_input("Are you sure you want to exit? (y/n): ");
+                    if confirmation == "y" {
+                        println!("Exiting the phone book...");
+                        break;
+                    }
                 }
                 "L" => phone_book.list_contacts(),
                 "A" => phone_book.list_contacts_in_ascending_order(),
