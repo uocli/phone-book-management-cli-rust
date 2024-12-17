@@ -10,7 +10,7 @@ use std::io::BufReader;
 use std::io::Write;
 
 /// Define a list of operations available in the phone book.
-pub const OPERATIONS: &[(char, &str)] = &[
+const OPERATIONS: &[(char, &str)] = &[
     ('C', "Create"),
     ('Q', "Fuzzy Query"),
     ('F', "Upload contacts from a CSV file"),
@@ -85,7 +85,7 @@ impl PhoneBook {
     /// phone_book.list_contacts();
     /// ```
     pub(crate) fn list_contacts(&self) {
-        Self::show_contacts(&self.contacts);
+        Self::show_contacts(self.contacts.iter().collect());
     }
     /// Sorts and displays the contacts in ascending order based on the first name.
     ///
@@ -102,7 +102,7 @@ impl PhoneBook {
     pub fn list_contacts_in_ascending_order(&mut self) {
         self.contacts
             .sort_by(|a, b| a.first_name.cmp(&b.first_name));
-        Self::show_contacts(&self.contacts);
+        Self::show_contacts(self.contacts.iter().collect());
     }
     /// Sorts and displays the contacts in descending order based on the first name.
     ///
@@ -119,7 +119,7 @@ impl PhoneBook {
     pub fn list_contacts_in_descending_order(&mut self) {
         self.contacts
             .sort_by(|a, b| b.first_name.cmp(&a.first_name));
-        Self::show_contacts(&self.contacts);
+        Self::show_contacts(self.contacts.iter().collect());
     }
     /// Displays a list of stored contacts in the phone book.
     ///
@@ -141,7 +141,7 @@ impl PhoneBook {
     /// phone_book.add_contact(Contact::new("John", "Doe", "john@example.com", "123 Main St", "1234567890"));
     /// PhoneBook::show_contacts(&phone_book.contacts);
     /// ```
-    fn show_contacts(contacts: &[Contact]) {
+    fn show_contacts(contacts: Vec<&Contact>) {
         if contacts.is_empty() {
             println!("No contacts found.");
             return;
@@ -162,11 +162,11 @@ impl PhoneBook {
         for (index, contact) in contacts.iter().enumerate() {
             table.add_row(vec![
                 Cell::new(format!("{}", index + 1)),
-                Cell::new(contact.first_name.clone()),
-                Cell::new(contact.last_name.clone()),
-                Cell::new(contact.phone_number.clone()),
-                Cell::new(contact.email.clone()),
-                Cell::new(contact.address.clone()),
+                Cell::new(&contact.first_name),
+                Cell::new(&contact.last_name),
+                Cell::new(&contact.phone_number),
+                Cell::new(&contact.email),
+                Cell::new(&contact.address),
             ]);
         }
         println!("{}", table);
@@ -346,7 +346,7 @@ impl PhoneBook {
     /// This function does not return any value. It prints the search results to the console.
     pub(crate) fn search_contact(&self) {
         let query = Self::get_input("Enter a search query: ").to_lowercase();
-        let mut found_contacts: Vec<Contact> = Vec::new();
+        let mut found_contacts: Vec<&Contact> = Vec::new();
         for contact in &self.contacts {
             if contact.first_name.to_lowercase().contains(&query)
                 || contact.last_name.to_lowercase().contains(&query)
@@ -354,13 +354,13 @@ impl PhoneBook {
                 || contact.address.to_lowercase().contains(&query)
                 || contact.phone_number.to_lowercase().contains(&query)
             {
-                found_contacts.push(contact.clone());
+                found_contacts.push(contact);
             }
         }
         if found_contacts.is_empty() {
             println!("No contacts found matching the search query.");
         } else {
-            Self::show_contacts(&found_contacts);
+            Self::show_contacts(found_contacts);
         }
     }
     /// Loads contacts from a CSV file into the phone book.
@@ -368,6 +368,17 @@ impl PhoneBook {
     /// # Parameters
     ///
     /// * `self` - A mutable reference to the `PhoneBook` instance.
+    ///
+    /// # Functionality
+    ///
+    /// 1. Prompts the user to enter the name of the CSV file to load contacts from.
+    /// 2. Opens the CSV file. If the file cannot be opened, an error message is printed and the function returns.
+    /// 3. Creates a CSV reader.
+    /// 4. Reads the header row of the CSV file. If the header row cannot be read, an error message is printed and the function returns.
+    /// 5. Gets the indices of the required columns based on the header.
+    /// 6. Iterates through the CSV records and creates `Contact` instances.
+    /// 7. Adds each created `Contact` instance to the `contacts` vector of the `PhoneBook` instance.
+    /// 8. Prints a success message indicating that the contacts have been loaded successfully from the CSV file.
     pub(crate) fn load_contacts_from_csv(&mut self) {
         let file_name = Self::get_input("Enter the name of the CSV file to load contacts from: ");
         // Open the CSV file

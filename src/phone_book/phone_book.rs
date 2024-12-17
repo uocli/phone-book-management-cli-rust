@@ -2,7 +2,6 @@ use crate::phone_book::contact::Contact;
 /**
  * Define a PhoneBook struct with a field for a vector of Contact structs.
  */
-#[derive(Debug)]
 pub struct PhoneBook {
     pub contacts: Vec<Contact>,
 }
