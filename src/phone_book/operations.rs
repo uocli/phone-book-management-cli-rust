@@ -85,12 +85,12 @@ impl PhoneBook {
     /// phone_book.list_contacts();
     /// ```
     pub(crate) fn list_contacts(&self) {
-        Self::show_contacts(self.contacts.iter().collect());
+        Self::print_contacts(self.contacts.iter().collect());
     }
     /// Sorts and displays the contacts in ascending order based on the first name.
     ///
     /// This function sorts the current list of contacts in ascending order based on the first name,
-    /// updates the `contacts` vector with the sorted list, and then calls the `show_contacts` function to display the sorted list.
+    /// updates the `contacts` vector with the sorted list, and then calls the `print_contacts` function to display the sorted list.
     ///
     /// # Parameters
     ///
@@ -102,12 +102,12 @@ impl PhoneBook {
     pub fn list_contacts_in_ascending_order(&mut self) {
         self.contacts
             .sort_by(|a, b| a.first_name.cmp(&b.first_name));
-        Self::show_contacts(self.contacts.iter().collect());
+        Self::print_contacts(self.contacts.iter().collect());
     }
     /// Sorts and displays the contacts in descending order based on the first name.
     ///
     /// This function sorts the current list of contacts in descending order based on the first name,
-    /// updates the `contacts` vector with the sorted list, and then calls the `show_contacts` function to display the sorted list.
+    /// updates the `contacts` vector with the sorted list, and then calls the `print_contacts` function to display the sorted list.
     ///
     /// # Parameters
     ///
@@ -119,7 +119,7 @@ impl PhoneBook {
     pub fn list_contacts_in_descending_order(&mut self) {
         self.contacts
             .sort_by(|a, b| b.first_name.cmp(&a.first_name));
-        Self::show_contacts(self.contacts.iter().collect());
+        Self::print_contacts(self.contacts.iter().collect());
     }
     /// Displays a list of stored contacts in the phone book.
     ///
@@ -139,9 +139,9 @@ impl PhoneBook {
     /// ```rust
     /// let mut phone_book = PhoneBook::new();
     /// phone_book.add_contact(Contact::new("John", "Doe", "john@example.com", "123 Main St", "1234567890"));
-    /// PhoneBook::show_contacts(&phone_book.contacts);
+    /// PhoneBook::print_contacts(&phone_book.contacts);
     /// ```
-    fn show_contacts(contacts: Vec<&Contact>) {
+    fn print_contacts(contacts: Vec<&Contact>) {
         if contacts.is_empty() {
             println!("No contacts found.");
             return;
@@ -334,7 +334,7 @@ impl PhoneBook {
     /// or phone number contains the search query, the contact is added to a new vector of found contacts.
     ///
     /// If no contacts are found matching the search query, a message is printed to the console indicating
-    /// that no contacts were found. Otherwise, the found contacts are displayed using the `show_contacts`
+    /// that no contacts were found. Otherwise, the found contacts are displayed using the `print_contacts`
     /// function.
     ///
     /// # Parameters
@@ -360,7 +360,7 @@ impl PhoneBook {
         if found_contacts.is_empty() {
             println!("No contacts found matching the search query.");
         } else {
-            Self::show_contacts(found_contacts);
+            Self::print_contacts(found_contacts);
         }
     }
     /// Loads contacts from a CSV file into the phone book.
