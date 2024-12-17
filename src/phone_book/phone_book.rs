@@ -50,7 +50,7 @@ impl PhoneBook {
             match operation.as_str() {
                 "C" => phone_book.create_contact(),
                 "Q" => phone_book.search_contact(),
-                "F" => {}
+                "F" => phone_book.load_contacts_from_csv(),
                 "U" => phone_book.update_contact(),
                 "D" => phone_book.delete_contact(),
                 "E" => {

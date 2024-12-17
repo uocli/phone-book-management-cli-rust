@@ -3,7 +3,10 @@ use crate::phone_book::phone_book::PhoneBook;
 use comfy_table::modifiers::UTF8_ROUND_CORNERS;
 use comfy_table::presets::UTF8_FULL;
 use comfy_table::{Cell, Table};
+use csv::ReaderBuilder;
+use std::fs::File;
 use std::io;
+use std::io::BufReader;
 use std::io::Write;
 
 /// Define a list of operations available in the phone book.
@@ -359,5 +362,60 @@ impl PhoneBook {
         } else {
             Self::show_contacts(&found_contacts);
         }
+    }
+    pub(crate) fn load_contacts_from_csv(&mut self) {
+        let file_name = Self::get_input("Enter the name of the CSV file to load contacts from: ");
+        // Open the CSV file
+        let file = match File::open(&file_name) {
+            Ok(file) => file,
+            Err(err) => {
+                println!("Error opening file: {}", err);
+                return;
+            }
+        };
+        // Create a CSV reader
+        let mut reader = ReaderBuilder::new().from_reader(BufReader::new(file));
+        // Read the header row
+        let header_row = match reader.headers() {
+            Ok(header_row) => header_row,
+            Err(err) => {
+                println!("Error reading header row: {}", err);
+                return;
+            }
+        };
+        // Get the indices of the required columns based on the header
+        let first_name_index = header_row.iter().position(|header| header == "first_name");
+        let last_name_index = header_row.iter().position(|header| header == "last_name");
+        let email_index = header_row.iter().position(|header| header == "email");
+        let address_index = header_row.iter().position(|header| header == "address");
+        let phone_number_index = header_row.iter().position(|header| header == "phone");
+        // Iterate through the CSV records and create Contact instances
+        for record in reader.records() {
+            match record {
+                Ok(record) => {
+                    let mut contact = Contact::default();
+                    if let Some(first_name_index) = first_name_index {
+                        contact.first_name = record[first_name_index].to_string();
+                    }
+                    if let Some(last_name_index) = last_name_index {
+                        contact.last_name = record[last_name_index].to_string();
+                    }
+                    if let Some(email_index) = email_index {
+                        contact.email = record[email_index].to_string();
+                    }
+                    if let Some(address_index) = address_index {
+                        contact.address = record[address_index].to_string();
+                    }
+                    if let Some(phone_number_index) = phone_number_index {
+                        contact.phone_number = record[phone_number_index].to_string();
+                    }
+                    self.contacts.push(contact);
+                }
+                Err(err) => {
+                    println!("Error reading record: {}", err);
+                }
+            }
+        }
+        println!("Contacts loaded successfully from file '{}'.", file_name);
     }
 }
