@@ -324,6 +324,23 @@ impl PhoneBook {
         self.contacts[index - 1] = updated_contact;
         println!("Contact updated successfully!");
     }
+    /// Searches for contacts in the phone book based on a given search query.
+    ///
+    /// This function takes a search query as input, converts it to lowercase, and then iterates through
+    /// the list of contacts in the phone book. If any contact's first name, last name, email, address,
+    /// or phone number contains the search query, the contact is added to a new vector of found contacts.
+    ///
+    /// If no contacts are found matching the search query, a message is printed to the console indicating
+    /// that no contacts were found. Otherwise, the found contacts are displayed using the `show_contacts`
+    /// function.
+    ///
+    /// # Parameters
+    ///
+    /// * `&self` - A reference to the `PhoneBook` instance.
+    ///
+    /// # Return
+    ///
+    /// This function does not return any value. It prints the search results to the console.
     pub(crate) fn search_contact(&self) {
         let query = Self::get_input("Enter a search query: ").to_lowercase();
         let mut found_contacts: Vec<Contact> = Vec::new();
