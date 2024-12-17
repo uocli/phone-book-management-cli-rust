@@ -60,7 +60,7 @@ impl PhoneBook {
         let email = Self::get_input("Enter email (optional): ");
         let address = Self::get_input("Enter address (optional): ");
         let new_contact = Contact::new(first_name, last_name, email, address, phone_number);
-        new_contact.show_contact();
+        new_contact.print_contact();
         self.add_contact(new_contact);
         println!("Contact created successfully!");
     }
@@ -268,7 +268,7 @@ impl PhoneBook {
             println!("Invalid contact index!");
             return;
         }
-        self.contacts[index - 1].show_contact();
+        self.contacts[index - 1].print_contact();
         let confirm = Self::get_input("Are you sure you want to delete this contact? (y/n): ");
         if confirm == "y" {
             self.contacts.remove(index - 1);
@@ -302,7 +302,7 @@ impl PhoneBook {
             println!("Invalid contact index!");
             return;
         }
-        self.contacts[index - 1].show_contact();
+        self.contacts[index - 1].print_contact();
         println!("Updating contact details...");
         let new_first_name = Self::get_input("Enter new first name: ");
         if new_first_name.is_empty() {
