@@ -324,4 +324,23 @@ impl PhoneBook {
         self.contacts[index - 1] = updated_contact;
         println!("Contact updated successfully!");
     }
+    pub(crate) fn search_contact(&self) {
+        let query = Self::get_input("Enter a search query: ").to_lowercase();
+        let mut found_contacts: Vec<Contact> = Vec::new();
+        for contact in &self.contacts {
+            if contact.first_name.to_lowercase().contains(&query)
+                || contact.last_name.to_lowercase().contains(&query)
+                || contact.email.to_lowercase().contains(&query)
+                || contact.address.to_lowercase().contains(&query)
+                || contact.phone_number.to_lowercase().contains(&query)
+            {
+                found_contacts.push(contact.clone());
+            }
+        }
+        if found_contacts.is_empty() {
+            println!("No contacts found matching the search query.");
+        } else {
+            Self::show_contacts(&found_contacts);
+        }
+    }
 }

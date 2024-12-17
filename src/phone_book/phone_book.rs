@@ -49,7 +49,7 @@ impl PhoneBook {
             let operation = Self::get_input("Enter an operation or ? for help: ").to_uppercase();
             match operation.as_str() {
                 "C" => phone_book.create_contact(),
-                "Q" => {}
+                "Q" => phone_book.search_contact(),
                 "F" => {}
                 "U" => phone_book.update_contact(),
                 "D" => phone_book.delete_contact(),
