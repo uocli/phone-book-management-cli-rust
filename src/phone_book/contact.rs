@@ -1,13 +1,17 @@
+use crate::schema::contacts;
 use comfy_table::modifiers::UTF8_ROUND_CORNERS;
 use comfy_table::presets::UTF8_FULL;
 use comfy_table::{Cell, Table};
+use diesel::Insertable;
 /// Define a Contact struct with fields for first name, last name, email, address, and phone number.
+#[derive(Insertable)]
+#[table_name = "contacts"]
 pub struct Contact {
     pub(crate) first_name: String,
     pub(crate) last_name: String,
     pub(crate) email: String,
     pub(crate) address: String,
-    pub(crate) phone_number: String,
+    pub(crate) phone: String,
 }
 /// Contact struct implementation.
 impl Contact {
@@ -38,7 +42,7 @@ impl Contact {
             last_name,
             email,
             address,
-            phone_number: standard_phone_number,
+            phone: standard_phone_number,
             ..Default::default()
         }
     }
@@ -72,7 +76,7 @@ impl Contact {
             &self.last_name,
             &self.email,
             &self.address,
-            &self.phone_number,
+            &self.phone,
         ]);
         // Print the contact information
         println!("{}", table);
@@ -120,7 +124,7 @@ impl Default for Contact {
             last_name: String::new(),
             email: String::new(),
             address: String::new(),
-            phone_number: String::new(),
+            phone: String::new(),
         }
     }
 }
