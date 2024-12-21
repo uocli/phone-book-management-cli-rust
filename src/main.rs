@@ -1,5 +1,7 @@
+mod connection;
 mod phone_book;
 mod schema;
+
 use dotenv::dotenv;
 use phone_book::phone_book::PhoneBook;
 
