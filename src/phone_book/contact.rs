@@ -1,10 +1,12 @@
-use crate::schema::contacts;
 use comfy_table::modifiers::UTF8_ROUND_CORNERS;
 use comfy_table::presets::UTF8_FULL;
 use comfy_table::{Cell, Table};
-use diesel::Insertable;
+use diesel::{Insertable, Queryable};
+
+use crate::schema::contacts;
+
 /// Define a Contact struct with fields for first name, last name, email, address, and phone number.
-#[derive(Insertable)]
+#[derive(Insertable, Queryable)]
 #[table_name = "contacts"]
 pub struct Contact {
     pub(crate) first_name: String,
