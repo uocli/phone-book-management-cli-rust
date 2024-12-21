@@ -338,25 +338,24 @@ impl PhoneBook {
         match Self::get_contacts("") {
             Ok(contacts) => {
                 for contact in contacts {
-                    if contact.first_name.to_lowercase().contains(&query)
-                        || contact.last_name.to_lowercase().contains(&query)
-                        || contact.email.to_lowercase().contains(&query)
-                        || contact.address.to_lowercase().contains(&query)
-                        || contact.phone.to_lowercase().contains(&query)
+                    if vec![
+                        &contact.first_name,
+                        &contact.last_name,
+                        &contact.email,
+                        &contact.address,
+                        &contact.phone,
+                    ]
+                    .iter()
+                    .any(|field| field.to_lowercase().contains(&query))
                     {
-                        let found_contact = Contact {
-                            id: contact.id.clone(),
-                            first_name: contact.first_name.clone(),
-                            last_name: contact.last_name.clone(),
-                            email: contact.email.clone(),
-                            address: contact.address.clone(),
-                            phone: contact.phone.clone(),
-                        };
-                        found_contacts.push(found_contact);
+                        found_contacts.push(contact);
                     }
                 }
             }
-            Err(_) => {}
+            Err(_) => {
+                println!("Error searching for contacts.");
+                return;
+            }
         }
         if found_contacts.is_empty() {
             println!("No contacts found matching the search query.");
