@@ -8,6 +8,7 @@ use comfy_table::presets::UTF8_FULL;
 use comfy_table::{Cell, Table};
 use csv::ReaderBuilder;
 use diesel::prelude::*;
+use diesel::update;
 
 use crate::connection::establish_connection;
 use crate::phone_book::contact::Contact;
@@ -305,15 +306,41 @@ impl PhoneBook {
         }
         let new_email = Self::get_input("Enter new email: ");
         let new_address = Self::get_input("Enter new address: ");
-        let updated_contact = Contact::new(
+        let mut updated_contact = Contact::new(
             new_first_name,
             new_last_name,
             new_email,
             new_address,
             new_phone_number,
         );
-        self.contacts[index - 1] = updated_contact;
-        println!("Contact updated successfully!");
+        let mut conn = establish_connection();
+        let contact_id_result = self.contacts.get(index - 1).map(|c| c.id);
+
+        if let Some(contact_id) = contact_id_result {
+            updated_contact.id = contact_id;
+            let num_rows_updated = update(contacts::table)
+                .filter(contacts::id.eq(contact_id))
+                .set((
+                    contacts::first_name.eq(&updated_contact.first_name),
+                    contacts::last_name.eq(&updated_contact.last_name),
+                    contacts::email.eq(&updated_contact.email),
+                    contacts::address.eq(&updated_contact.address),
+                    contacts::phone.eq(&updated_contact.phone),
+                ))
+                .execute(&mut conn);
+
+            match num_rows_updated {
+                Ok(_) => {
+                    println!("Contact updated successfully!");
+                }
+                Err(err) => {
+                    println!("Error updating contact: {}", err);
+                }
+            }
+            self.contacts[index - 1] = updated_contact;
+        } else {
+            println!("Invalid contact ID.");
+        }
     }
     /// Searches for contacts in the phone book based on a given search query.
     ///

@@ -70,17 +70,17 @@ impl Contact {
             .set_header(vec![
                 Cell::new("First Name").add_attribute(comfy_table::Attribute::Bold),
                 Cell::new("Last Name").add_attribute(comfy_table::Attribute::Bold),
+                Cell::new("Phone Number").add_attribute(comfy_table::Attribute::Bold),
                 Cell::new("Email").add_attribute(comfy_table::Attribute::Bold),
                 Cell::new("Address").add_attribute(comfy_table::Attribute::Bold),
-                Cell::new("Phone Number").add_attribute(comfy_table::Attribute::Bold),
             ]);
         // Add contact details to the table
         table.add_row(vec![
             &self.first_name,
             &self.last_name,
+            &self.phone,
             &self.email,
             &self.address,
-            &self.phone,
         ]);
         // Print the contact information
         println!("{}", table);
