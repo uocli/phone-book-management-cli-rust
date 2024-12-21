@@ -66,7 +66,7 @@ impl PhoneBook {
         let address = Self::get_input("Enter address (optional): ");
         let new_contact = Contact::new(first_name, last_name, email, address, phone_number);
         new_contact.print_contact();
-        self.add_contact(new_contact);
+        Self::add_contact(new_contact);
         println!("Contact created successfully!");
     }
     /// Lists the contacts in the phone book in the specified order.
@@ -192,7 +192,7 @@ impl PhoneBook {
     /// # Return
     ///
     /// This function does not return any value. The `contacts` vector of the `PhoneBook` instance is updated.
-    pub fn add_contact(&mut self, contact: Contact) {
+    pub fn add_contact(contact: Contact) {
         use crate::schema::contacts;
         let mut connection = establish_connection();
         diesel::insert_into(contacts::table)
@@ -425,7 +425,7 @@ impl PhoneBook {
                     if let Some(phone_number_index) = phone_number_index {
                         contact.phone = record[phone_number_index].to_string();
                     }
-                    self.contacts.push(contact);
+                    Self::add_contact(contact)
                 }
                 Err(err) => {
                     println!("Error reading record: {}", err);
