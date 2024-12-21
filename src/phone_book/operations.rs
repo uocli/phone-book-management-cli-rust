@@ -1,9 +1,11 @@
+use crate::connection::establish_connection;
 use crate::phone_book::contact::Contact;
 use crate::phone_book::phone_book::PhoneBook;
 use comfy_table::modifiers::UTF8_ROUND_CORNERS;
 use comfy_table::presets::UTF8_FULL;
 use comfy_table::{Cell, Table};
 use csv::ReaderBuilder;
+use diesel::prelude::*;
 use std::fs::File;
 use std::io;
 use std::io::BufReader;
@@ -164,7 +166,7 @@ impl PhoneBook {
                 Cell::new(format!("{}", index + 1)),
                 Cell::new(&contact.first_name),
                 Cell::new(&contact.last_name),
-                Cell::new(&contact.phone_number),
+                Cell::new(&contact.phone),
                 Cell::new(&contact.email),
                 Cell::new(&contact.address),
             ]);
@@ -210,7 +212,12 @@ impl PhoneBook {
     ///
     /// This function does not return any value. The `contacts` vector of the `PhoneBook` instance is updated.
     pub fn add_contact(&mut self, contact: Contact) {
-        self.contacts.push(contact);
+        use crate::schema::contacts;
+        let mut connection = establish_connection();
+        diesel::insert_into(contacts::table)
+            .values(&contact)
+            .execute(&mut connection)
+            .expect("Error saving new contact");
     }
     /// Displays the available operations in a table format for the `PhoneBook` struct.
     ///
@@ -352,7 +359,7 @@ impl PhoneBook {
                 || contact.last_name.to_lowercase().contains(&query)
                 || contact.email.to_lowercase().contains(&query)
                 || contact.address.to_lowercase().contains(&query)
-                || contact.phone_number.to_lowercase().contains(&query)
+                || contact.phone.to_lowercase().contains(&query)
             {
                 found_contacts.push(contact);
             }
@@ -423,7 +430,7 @@ impl PhoneBook {
                         contact.address = record[address_index].to_string();
                     }
                     if let Some(phone_number_index) = phone_number_index {
-                        contact.phone_number = record[phone_number_index].to_string();
+                        contact.phone = record[phone_number_index].to_string();
                     }
                     self.contacts.push(contact);
                 }
