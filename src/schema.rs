@@ -4,10 +4,11 @@ diesel::table! {
     contacts (id) {
         id -> Nullable<Integer>,
         first_name -> Text,
-        last_name -> Nullable<Text>,
-        email -> Nullable<Text>,
+        last_name -> Text,
+        email -> Text,
+        address -> Text,
         phone -> Text,
-        address -> Nullable<Text>,
-        created_date -> Nullable<Text>,
+        created_at -> Timestamp,
+        last_modified_at -> Timestamp,
     }
 }
