@@ -8,7 +8,5 @@ diesel::table! {
         email -> Text,
         address -> Text,
         phone -> Text,
-        created_at -> Timestamp,
-        last_modified_at -> Timestamp,
     }
 }
