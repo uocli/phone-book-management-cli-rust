@@ -9,6 +9,7 @@ use crate::schema::contacts;
 #[derive(Insertable, Queryable)]
 #[table_name = "contacts"]
 pub struct Contact {
+    pub(crate) id: Option<i32>, // Diesel uses Option for nullable integer fields.
     pub(crate) first_name: String,
     pub(crate) last_name: String,
     pub(crate) email: String,
@@ -122,6 +123,7 @@ impl Default for Contact {
     /// - `phone_number`: An empty string.
     fn default() -> Self {
         Contact {
+            id: None, // Diesel uses Option for nullable integer fields.
             first_name: String::new(),
             last_name: String::new(),
             email: String::new(),
