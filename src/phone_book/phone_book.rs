@@ -59,9 +59,9 @@ impl PhoneBook {
                         break;
                     }
                 }
-                "L" => phone_book.list_contacts(),
-                "A" => phone_book.list_contacts_in_ascending_order(),
-                "Z" => phone_book.list_contacts_in_descending_order(),
+                "L" => phone_book.list_contacts_in_order(""),
+                "A" => phone_book.list_contacts_in_order("asc"),
+                "Z" => phone_book.list_contacts_in_order("desc"),
                 "?" => phone_book.show_operations(),
                 _ => println!("Invalid operation: {}", operation),
             }

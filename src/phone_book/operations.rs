@@ -1,15 +1,18 @@
-use crate::connection::establish_connection;
-use crate::phone_book::contact::Contact;
-use crate::phone_book::phone_book::PhoneBook;
+use std::fs::File;
+use std::io;
+use std::io::BufReader;
+use std::io::Write;
+
 use comfy_table::modifiers::UTF8_ROUND_CORNERS;
 use comfy_table::presets::UTF8_FULL;
 use comfy_table::{Cell, Table};
 use csv::ReaderBuilder;
 use diesel::prelude::*;
-use std::fs::File;
-use std::io;
-use std::io::BufReader;
-use std::io::Write;
+
+use crate::connection::establish_connection;
+use crate::phone_book::contact::Contact;
+use crate::phone_book::phone_book::PhoneBook;
+use crate::schema::contacts;
 
 /// Define a list of operations available in the phone book.
 const OPERATIONS: &[(char, &str)] = &[
@@ -66,62 +69,41 @@ impl PhoneBook {
         self.add_contact(new_contact);
         println!("Contact created successfully!");
     }
-    /// Displays the list of stored contacts in the phone book.
-    ///
-    /// This function iterates through the contacts stored in the phone book and displays them in a formatted table.
-    /// If no contacts are found, it prints a message indicating that no contacts were found.
+    /// Lists the contacts in the phone book in the specified order.
     ///
     /// # Parameters
     ///
-    /// * `&self` - A reference to the `PhoneBook` instance.
+    /// * `self` - A mutable reference to the `PhoneBook` instance.
+    /// * `order` - A string slice representing the order in which to list the contacts.
+    ///               It can be either "asc" for ascending order or "desc" for descending order.
     ///
     /// # Return
     ///
-    /// This function does not return any value. It prints the table to the console.
-    ///
-    /// # Example
-    ///
-    /// ```rust
-    /// let mut phone_book = PhoneBook::new();
-    /// phone_book.add_contact(Contact::new("John", "Doe", "john@example.com", "123 Main St", "1234567890"));
-    /// phone_book.list_contacts();
-    /// ```
-    pub(crate) fn list_contacts(&self) {
-        Self::print_contacts(self.contacts.iter().collect());
-    }
-    /// Sorts and displays the contacts in ascending order based on the first name.
-    ///
-    /// This function sorts the current list of contacts in ascending order based on the first name,
-    /// updates the `contacts` vector with the sorted list, and then calls the `print_contacts` function to display the sorted list.
-    ///
-    /// # Parameters
-    ///
-    /// * `&mut self` - A mutable reference to the `PhoneBook` instance.
-    ///
-    /// # Return
-    ///
-    /// This function does not return any value. It prints the sorted list of contacts to the console.
-    pub fn list_contacts_in_ascending_order(&mut self) {
-        self.contacts
-            .sort_by(|a, b| a.first_name.cmp(&b.first_name));
-        Self::print_contacts(self.contacts.iter().collect());
-    }
-    /// Sorts and displays the contacts in descending order based on the first name.
-    ///
-    /// This function sorts the current list of contacts in descending order based on the first name,
-    /// updates the `contacts` vector with the sorted list, and then calls the `print_contacts` function to display the sorted list.
-    ///
-    /// # Parameters
-    ///
-    /// * `&mut self` - A mutable reference to the `PhoneBook` instance.
-    ///
-    /// # Return
-    ///
-    /// This function does not return any value. It prints the sorted list of contacts to the console.
-    pub fn list_contacts_in_descending_order(&mut self) {
-        self.contacts
-            .sort_by(|a, b| b.first_name.cmp(&a.first_name));
-        Self::print_contacts(self.contacts.iter().collect());
+    /// This function does not return any value. It prints the table of contacts to the console.
+    pub fn list_contacts_in_order(&mut self, order: &str) {
+        let mut connection = establish_connection();
+        let contacts_result = match order {
+            "asc" => contacts::table
+                .order(contacts::first_name.asc())
+                .load::<Contact>(&mut connection),
+            "desc" => contacts::table
+                .order(contacts::first_name.desc())
+                .load::<Contact>(&mut connection),
+            "" => contacts::table.load::<Contact>(&mut connection),
+            _ => {
+                println!("Invalid order parameter. Please use 'asc' or 'desc'.");
+                return;
+            }
+        };
+        match contacts_result {
+            Ok(contacts) => {
+                self.contacts = contacts;
+                Self::print_contacts(self.contacts.iter().collect());
+            }
+            Err(err) => {
+                println!("Error fetching contacts from the database: {}", err);
+            }
+        }
     }
     /// Displays a list of stored contacts in the phone book.
     ///
