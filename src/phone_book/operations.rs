@@ -81,6 +81,17 @@ impl PhoneBook {
     ///
     /// This function does not return any value. It prints the table of contacts to the console.
     pub fn list_contacts_in_order(&mut self, order: &str) {
+        match Self::get_contacts(order) {
+            Ok(contacts) => {
+                self.contacts = contacts;
+                Self::print_contacts(&self.contacts);
+            }
+            Err(err) => {
+                println!("Error fetching contacts from the database: {}", err);
+            }
+        }
+    }
+    pub fn get_contacts(order: &str) -> QueryResult<Vec<Contact>> {
         let mut connection = establish_connection();
         let contacts_result = match order {
             "asc" => contacts::table
@@ -89,21 +100,9 @@ impl PhoneBook {
             "desc" => contacts::table
                 .order(contacts::first_name.desc())
                 .load::<Contact>(&mut connection),
-            "" => contacts::table.load::<Contact>(&mut connection),
-            _ => {
-                println!("Invalid order parameter. Please use 'asc' or 'desc'.");
-                return;
-            }
+            _ => contacts::table.load::<Contact>(&mut connection),
         };
-        match contacts_result {
-            Ok(contacts) => {
-                self.contacts = contacts;
-                Self::print_contacts(self.contacts.iter().collect());
-            }
-            Err(err) => {
-                println!("Error fetching contacts from the database: {}", err);
-            }
-        }
+        contacts_result
     }
     /// Displays a list of stored contacts in the phone book.
     ///
@@ -125,7 +124,7 @@ impl PhoneBook {
     /// phone_book.add_contact(Contact::new("John", "Doe", "john@example.com", "123 Main St", "1234567890"));
     /// PhoneBook::print_contacts(&phone_book.contacts);
     /// ```
-    fn print_contacts(contacts: Vec<&Contact>) {
+    fn print_contacts(contacts: &Vec<Contact>) {
         if contacts.is_empty() {
             println!("No contacts found.");
             return;
@@ -333,23 +332,36 @@ impl PhoneBook {
     /// # Return
     ///
     /// This function does not return any value. It prints the search results to the console.
-    pub(crate) fn search_contact(&self) {
+    pub(crate) fn search_contact(&mut self) {
         let query = Self::get_input("Enter a search query: ").to_lowercase();
-        let mut found_contacts: Vec<&Contact> = Vec::new();
-        for contact in &self.contacts {
-            if contact.first_name.to_lowercase().contains(&query)
-                || contact.last_name.to_lowercase().contains(&query)
-                || contact.email.to_lowercase().contains(&query)
-                || contact.address.to_lowercase().contains(&query)
-                || contact.phone.to_lowercase().contains(&query)
-            {
-                found_contacts.push(contact);
+        let mut found_contacts: Vec<Contact> = Vec::new();
+        match Self::get_contacts("") {
+            Ok(contacts) => {
+                for contact in contacts {
+                    if contact.first_name.to_lowercase().contains(&query)
+                        || contact.last_name.to_lowercase().contains(&query)
+                        || contact.email.to_lowercase().contains(&query)
+                        || contact.address.to_lowercase().contains(&query)
+                        || contact.phone.to_lowercase().contains(&query)
+                    {
+                        let found_contact = Contact {
+                            id: contact.id.clone(),
+                            first_name: contact.first_name.clone(),
+                            last_name: contact.last_name.clone(),
+                            email: contact.email.clone(),
+                            address: contact.address.clone(),
+                            phone: contact.phone.clone(),
+                        };
+                        found_contacts.push(found_contact);
+                    }
+                }
             }
+            Err(_) => {}
         }
         if found_contacts.is_empty() {
             println!("No contacts found matching the search query.");
         } else {
-            Self::print_contacts(found_contacts);
+            Self::print_contacts(&found_contacts);
         }
     }
     /// Loads contacts from a CSV file into the phone book.

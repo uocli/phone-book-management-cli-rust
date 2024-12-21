@@ -8,6 +8,7 @@ use crate::schema::contacts;
 /// Define a Contact struct with fields for first name, last name, email, address, and phone number.
 #[derive(Insertable, Queryable)]
 #[table_name = "contacts"]
+#[derive(Clone)]
 pub struct Contact {
     pub(crate) id: Option<i32>, // Diesel uses Option for nullable integer fields.
     pub(crate) first_name: String,
