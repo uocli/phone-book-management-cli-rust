@@ -8,7 +8,7 @@ use comfy_table::presets::UTF8_FULL;
 use comfy_table::{Cell, Table};
 use csv::ReaderBuilder;
 use diesel::prelude::*;
-use diesel::update;
+use diesel::{delete, update};
 
 use crate::connection::establish_connection;
 use crate::phone_book::contact::Contact;
@@ -259,9 +259,18 @@ impl PhoneBook {
         }
         self.contacts[index - 1].print_contact();
         let confirm = Self::get_input("Are you sure you want to delete this contact? (y/n): ");
-        if confirm == "y" {
-            self.contacts.remove(index - 1);
-            println!("Contact at index {} deleted successfully.", index);
+        if confirm.to_lowercase() == "y" {
+            let contact = &self.contacts[index - 1];
+            let mut conn = establish_connection();
+            match delete(contacts::table.filter(contacts::id.eq(contact.id))).execute(&mut conn) {
+                Ok(_) => {
+                    self.contacts.remove(index - 1);
+                    println!("Contact at index {} deleted successfully.", index);
+                }
+                Err(e) => {
+                    println!("Error deleting contact from database: {}", e);
+                }
+            }
         } else {
             println!("Contact deletion cancelled.");
         }
